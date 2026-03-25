@@ -7,24 +7,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Buildozer dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libtool automake autoconf libtool-bin openjdk-17-jdk
+          sudo apt install -y python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libtool automake autoconf libtool-bin
           pip3 install --user --upgrade buildozer Cython==0.29.33 virtualenv
 
-      - name: Build APK with Buildozer
+      - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # On accepte les licences proprement ici
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          # On lance le build
-          buildozer android debug
+          # Cette commande accepte toutes les licences SDK Android avant le build
+          yes | buildozer android debug
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          # Cette variable d'environnement dit à Android d'accepter les licences
-          AUTO_ACCEPT_SDK_LICENSES: "1"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
