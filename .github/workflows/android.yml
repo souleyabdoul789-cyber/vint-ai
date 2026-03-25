@@ -20,4 +20,3 @@ jobs:
         with:
           name: Vint-AI-Package
           path: bin/*.apk
-
