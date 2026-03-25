@@ -10,13 +10,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libtool automake autoconf libtool-bin
+          sudo apt install -y python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libtool automake autoconf libtool-bin openjdk-17-jdk
           pip3 install --user --upgrade buildozer Cython==0.29.33 virtualenv
 
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          buildozer android debug
+          # Cette ligne accepte automatiquement les licences Android
+          yes | buildozer android debug
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
