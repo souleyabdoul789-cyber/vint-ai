@@ -13,29 +13,22 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Buildozer and SDK Tools
+      - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y python3-pip build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libtool automake autoconf libtool-bin cmake
           pip3 install --user --upgrade buildozer Cython==0.29.33 virtualenv
 
-      - name: Pre-accept Android Licenses
+      - name: Accept Android SDK Licenses
         run: |
-          # Télécharge et accepte les licences sans passer par Buildozer d'abord
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses || true
+          # On utilise le SDK pré-installé sur l'image Ubuntu de GitHub
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          # On force le build sans interaction
           buildozer android debug
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           TERM: xterm
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Vint-AI-Package
-          path: bin/*.apk
