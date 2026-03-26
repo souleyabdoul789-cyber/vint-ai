@@ -10,7 +10,7 @@ Dépendances :
 Lancement :
     python vint_ai.py
 """
-
+import certifi
 import os, json, threading
 from datetime import datetime
 from openai import OpenAI
@@ -45,6 +45,8 @@ GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 MODEL_NAME   = "openai/gpt-oss-120b"
 MEMORY_FILE  = "memory.json"
 MAX_HISTORY  = 20
+os.environ['SSL_CERT_FILE'] = certifi.where()
+os.environ['PYTHONOPTIMIZE'] = '2'
 
 SYSTEM_RULES = """Tu es Vint-AI, un assistant expert en programmation Python et cybersécurité.
 
